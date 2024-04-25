@@ -6,7 +6,6 @@ import com.badmanners.murglar.lib.core.utils.getJsonObject
 import com.badmanners.murglar.lib.core.utils.string
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
-import org.jellyfin.sdk.model.api.UserDto
 
 class UserApi(val api: JellyfinApi) {
     data class AuthResult(val userId: String?, val token: String?, val userName: String?)
@@ -21,6 +20,7 @@ class UserApi(val api: JellyfinApi) {
         return AuthResult(
             userId = result.getJsonObject("User")["Id"]?.string,
             token = result["AccessToken"].toString(),
-            userName = result.getJsonObject("User")["Name"].toString())
+            userName = result.getJsonObject("User")["Name"].toString()
+        )
     }
 }

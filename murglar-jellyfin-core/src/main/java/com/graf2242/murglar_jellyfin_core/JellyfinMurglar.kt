@@ -77,6 +77,7 @@ class JellyfinMurglar(
 
         jellyfinApi.userId = loginResolver.userId
         jellyfinApi.token = loginResolver.accessToken
+        jellyfinApi.authType = loginResolver.authType
     }
 
     override val murglarPreferences: List<Preference>

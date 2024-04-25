@@ -12,12 +12,9 @@ import com.badmanners.murglar.lib.core.preference.PreferenceMiddleware
 import com.badmanners.murglar.lib.core.webview.WebViewProvider
 import com.graf2242.murglar_jellyfin_core.JellyfinMurglar
 import com.graf2242.murglar_jellyfin_core.localization.JellyfinMessages
-import kotlinx.coroutines.runBlocking
-import org.jellyfin.sdk.api.client.Response
 import org.jellyfin.sdk.api.client.exception.ApiClientException
-import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
-import org.jellyfin.sdk.model.api.AuthenticationResult
+import javax.security.auth.login.FailedLoginException
 
 class JellyfinLoginResolver(
     private val preferences: PreferenceMiddleware,
@@ -39,8 +36,9 @@ class JellyfinLoginResolver(
         private const val USERNAME_PREFERENCE = "username"
         private const val TOKEN_PREFERENCE = "token"
         private const val USERID_PREFERENCE = "userId"
+        private const val AUTH_TYPE = "auth_type"
 
-        private const val NO_VALUE = "no_value"
+        private const val NO_VALUE = ""
     }
 
     val accessToken: String
@@ -51,6 +49,9 @@ class JellyfinLoginResolver(
 
     val username: String
         get() = preferences.getString(USERNAME_PREFERENCE, NO_VALUE)
+
+    val authType: String
+        get() = preferences.getString(AUTH_TYPE, NO_VALUE)
 
     override val credentialsLoginVariants = listOf(
         CredentialsLoginVariant(
@@ -101,9 +102,11 @@ class JellyfinLoginResolver(
                     {
                         murglar.jellyfinApi.token = authenticationResult.token
                         murglar.jellyfinApi.userId = authenticationResult.userId
+                        murglar.jellyfinApi.authType = USERNAME_LOGIN_VARIANT
                         preferences.setString(TOKEN_PREFERENCE, authenticationResult.token)
                         preferences.setString(USERID_PREFERENCE, authenticationResult.userId.toString())
                         preferences.setString(USERNAME_PREFERENCE, authenticationResult.userName!!)
+                        preferences.setString(AUTH_TYPE, USERNAME_LOGIN_VARIANT)
                     }
                 } catch(err: ApiClientException) {
                     println("Something went wrong! ${err.message}")
@@ -111,8 +114,12 @@ class JellyfinLoginResolver(
 
             }
             TOKEN_LOGIN_VARIANT -> {
+                if (murglar.jellyfinApi.apiKeyApi.keys(args["token"]?:"") == null)
+                    throw FailedLoginException("Wrong token")
                 murglar.jellyfinApi.token = args["token"]
+                murglar.jellyfinApi.authType = TOKEN_LOGIN_VARIANT
                 preferences.setString(TOKEN_PREFERENCE, args["token"]!!)
+                preferences.setString(AUTH_TYPE, TOKEN_LOGIN_VARIANT)
             }
         }
 
