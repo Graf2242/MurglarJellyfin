@@ -23,4 +23,13 @@ class UserApi(val api: JellyfinApi) {
             userName = result.getJsonObject("User")["Name"].toString()
         )
     }
+
+    fun checkToken(): Boolean {
+        val request = NetworkRequest.Builder("${api.serverUrl}/Users" , "GET")
+            .addHeader("Authorization", api.getAuthHeader())
+            .build()
+        val response = api.network.execute(request, ResponseConverters.asString())
+        api.logger.w("Jellyfin", "result: ${response.statusCode}, isSuccessful: $response.isSuccessful")
+        return response.isSuccessful
+    }
 }

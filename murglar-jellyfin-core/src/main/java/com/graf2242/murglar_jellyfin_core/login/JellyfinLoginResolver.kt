@@ -88,9 +88,11 @@ class JellyfinLoginResolver(
         loginVariantId: String,
         args: Map<String, String>
     ): CredentialLoginStep {
+        logout()
+        val userApi = murglar.jellyfinApi.userApi
+        murglar.jellyfinApi.authType = USERNAME_LOGIN_VARIANT
         when (loginVariantId){
             USERNAME_LOGIN_VARIANT -> {
-                val userApi = murglar.jellyfinApi.userApi
                 try {
                      val authenticationResult = userApi.authenticateUserByName(
                              data = AuthenticateUserByName(
@@ -102,7 +104,6 @@ class JellyfinLoginResolver(
                     {
                         murglar.jellyfinApi.token = authenticationResult.token
                         murglar.jellyfinApi.userId = authenticationResult.userId
-                        murglar.jellyfinApi.authType = USERNAME_LOGIN_VARIANT
                         preferences.setString(TOKEN_PREFERENCE, authenticationResult.token)
                         preferences.setString(USERID_PREFERENCE, authenticationResult.userId.toString())
                         preferences.setString(USERNAME_PREFERENCE, authenticationResult.userName!!)
@@ -117,9 +118,13 @@ class JellyfinLoginResolver(
                 if (murglar.jellyfinApi.apiKeyApi.keys(args["token"]?:"") == null)
                     throw FailedLoginException("Wrong token")
                 murglar.jellyfinApi.token = args["token"]
-                murglar.jellyfinApi.authType = TOKEN_LOGIN_VARIANT
+                if (!userApi.checkToken())
+                    throw FailedLoginException("Wrong token")
                 preferences.setString(TOKEN_PREFERENCE, args["token"]!!)
                 preferences.setString(AUTH_TYPE, TOKEN_LOGIN_VARIANT)
+
+                preferences.setString(USERID_PREFERENCE, NO_VALUE)
+                preferences.setString(USERNAME_PREFERENCE, NO_VALUE)
             }
         }
 
@@ -128,7 +133,10 @@ class JellyfinLoginResolver(
 
     override fun logout() {
         network.clearAllCookies()
+        preferences.remove(AUTH_TYPE)
         preferences.remove(TOKEN_PREFERENCE)
+        preferences.remove(USERNAME_PREFERENCE)
+        preferences.remove(USERID_PREFERENCE)
         preferences.remove(USERNAME_PREFERENCE)
     }
 
