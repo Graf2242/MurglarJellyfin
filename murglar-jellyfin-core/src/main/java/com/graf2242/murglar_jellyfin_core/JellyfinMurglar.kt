@@ -247,28 +247,28 @@ class JellyfinMurglar(
     }
 
     fun reportTrackStart(jellyfinTrack: JellyfinTrack) {
-        runBlocking {
-            val info = PlaybackStartInfo(
-                canSeek=false,
-                itemId=UUID.fromString(jellyfinTrack.id),
-                isMuted = false,
-                isPaused = false,
-                playMethod = PlayMethod.DIRECT_STREAM,
-                repeatMode = RepeatMode.REPEAT_NONE
-            )
-
-            jellyfinApi.playStateApi.reportPlaybackStart(info)
-        }
+//        runBlocking {
+//            val info = PlaybackStartInfo(
+//                canSeek=false,
+//                itemId=UUID.fromString(jellyfinTrack.id),
+//                isMuted = false,
+//                isPaused = false,
+//                playMethod = PlayMethod.DIRECT_STREAM,
+//                repeatMode = RepeatMode.REPEAT_NONE
+//            )
+//
+//            jellyfinApi.playStateApi.reportPlaybackStart(info)
+//        }
     }
 
     fun reportTrackEnd(jellyfinTrack: JellyfinTrack, endTimeMs: Int) {
-        runBlocking {
-            val info = PlaybackStopInfo(
-                itemId = UUID.fromString(jellyfinTrack.id),
-                failed = false
-            )
-
-            jellyfinApi.playStateApi.reportPlaybackStopped(info)
-        }
+//        runBlocking {
+//            val info = PlaybackStopInfo(
+//                itemId = UUID.fromString(jellyfinTrack.id),
+//                failed = false
+//            )
+//
+//            jellyfinApi.playStateApi.reportPlaybackStopped(info)
+//        }
     }
 }

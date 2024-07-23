@@ -7,6 +7,8 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+ kotlinStdlib = "1.9.24"
+kotlinStdlibJdk8 = "1.8.22"
 material = "1.11.0"
 runner = "1.0.2"
 espressoCoreVersion = "3.0.2"
@@ -18,3 +20,5 @@ monitor = "1.6.1"
 jellyfin-core = { group = "org.jellyfin.sdk", name = "jellyfin-core", version.ref = "jellyfin-sdk" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }

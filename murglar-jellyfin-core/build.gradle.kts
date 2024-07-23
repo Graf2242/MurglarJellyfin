@@ -1,5 +1,5 @@
 plugins {
-    id("murglar-gradle-plugin-core") version "4.1"
+    id("murglar-gradle-plugin-core") version "4.2"
 }
 
 dependencies {
