@@ -1,11 +1,7 @@
 package com.graf2242.murglar_jellyfin_core.jellyfin_api.api
 
 import com.badmanners.murglar.lib.core.network.NetworkRequest
-import com.badmanners.murglar.lib.core.network.ResponseConverters
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
-import kotlinx.serialization.decodeFromString
-import org.jellyfin.sdk.api.client.util.ApiSerializer
-import org.jellyfin.sdk.model.api.BaseItemDtoQueryResult
 import org.jellyfin.sdk.model.api.PlaybackStartInfo
 import org.jellyfin.sdk.model.api.PlaybackStopInfo
 

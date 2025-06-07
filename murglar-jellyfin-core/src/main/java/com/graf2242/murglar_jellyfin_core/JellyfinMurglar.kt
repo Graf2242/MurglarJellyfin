@@ -24,13 +24,7 @@ import com.graf2242.murglar_jellyfin_core.model.albumFromItemResult
 import com.graf2242.murglar_jellyfin_core.model.artistFromItemResult
 import com.graf2242.murglar_jellyfin_core.model.trackFromItemResult
 import com.graf2242.murglar_jellyfin_core.node.JellyfinNodeResolver
-import kotlinx.coroutines.runBlocking
 import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.PlayMethod
-import org.jellyfin.sdk.model.api.PlaybackStartInfo
-import org.jellyfin.sdk.model.api.PlaybackStopInfo
-import org.jellyfin.sdk.model.api.RepeatMode
-
 import java.util.Locale.ENGLISH
 import java.util.UUID
 
@@ -60,8 +54,6 @@ class JellyfinMurglar(
         const val SAMPLE_DOMAIN = "https://sample.com"
         private const val SERVER_URL_PREFERENCE = "jellyfin-domain"
     }
-
-    val log = logger
 
     // Maybe sometimes we'll be able to use default jellyfin sdk api. For now it's broken because of coroutines incompatibility
 //    val jellyfinApi = createJellyfin {
@@ -235,15 +227,11 @@ class JellyfinMurglar(
     }
 
     fun addToFavorite(itemId: String) {
-        runBlocking {
-            jellyfinApi.userLibraryApi.markFavoriteItem(userId = jellyfinApi.userId!!, itemId = UUID.fromString(itemId))
-        }
+        jellyfinApi.userLibraryApi.markFavoriteItem(userId = jellyfinApi.userId!!, itemId = UUID.fromString(itemId))
     }
 
     fun removeFromFavorite(itemId: String) {
-        runBlocking {
-            jellyfinApi.userLibraryApi.unmarkFavoriteItem(userId = jellyfinApi.userId!!, itemId = UUID.fromString(itemId))
-        }
+        jellyfinApi.userLibraryApi.unmarkFavoriteItem(userId = jellyfinApi.userId!!, itemId = UUID.fromString(itemId))
     }
 
     fun reportTrackStart(jellyfinTrack: JellyfinTrack) {

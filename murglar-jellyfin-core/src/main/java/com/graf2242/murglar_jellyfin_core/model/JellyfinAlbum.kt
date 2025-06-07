@@ -1,15 +1,12 @@
 package com.graf2242.murglar_jellyfin_core.model
 
 import com.badmanners.murglar.lib.core.model.album.BaseAlbum
+import com.badmanners.murglar.lib.core.model.node.NodeType.ALBUM
 import com.badmanners.murglar.lib.core.utils.contract.Model
-import org.jellyfin.sdk.api.client.ApiClient
-import org.jellyfin.sdk.api.client.extensions.imageApi
-import org.jellyfin.sdk.api.client.extensions.itemsApi
+import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
 import org.jellyfin.sdk.model.api.BaseItemDtoQueryResult
 import org.jellyfin.sdk.model.api.ImageType
 import org.threeten.bp.LocalDate
-import com.badmanners.murglar.lib.core.model.node.NodeType.ALBUM
-import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
 
 
 @Model
@@ -47,8 +44,16 @@ fun albumFromItemResult(result: BaseItemDtoQueryResult, jellyfinApi: JellyfinApi
         return emptyList();
 
     return result.items!!.map {
-        val bigCoverUrl = if (it.imageTags!!.containsKey(ImageType.PRIMARY)) jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.PRIMARY) else null
-        val smallCoverUrl = if (it.imageTags!!.containsKey(ImageType.LOGO)) jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.LOGO) else bigCoverUrl
+        val bigCoverUrl = when {
+            it.imageTags!!.containsKey(ImageType.PRIMARY) ->
+                jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.PRIMARY)
+            else -> null
+        }
+        val smallCoverUrl = when {
+            it.imageTags!!.containsKey(ImageType.LOGO) ->
+                jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.LOGO)
+            else -> bigCoverUrl
+        }
         JellyfinAlbum(
             id = it.id.toString(),
             title = it.name!!,

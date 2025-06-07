@@ -12,9 +12,7 @@ import com.graf2242.murglar_jellyfin_core.jellyfin_api.api.PlayStateApi
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.api.UserApi
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.api.UserLibraryApi
 import com.graf2242.murglar_jellyfin_core.login.JellyfinLoginResolver
-import org.jellyfin.sdk.api.client.ApiClient
-import org.jellyfin.sdk.api.client.exception.MissingBaseUrlException
-import org.jellyfin.sdk.api.client.util.UrlBuilder
+
 
 class JellyfinApi(val murglar: JellyfinMurglar, val network: NetworkMiddleware, val logger: LoggerMiddleware) {
 
@@ -22,7 +20,7 @@ class JellyfinApi(val murglar: JellyfinMurglar, val network: NetworkMiddleware, 
     var token: String? = ""
     var authType: String? = ""
     var client: String? = "Murglar"
-    var version: String? = "0.0.1"
+    var version: String? = "2"
     var deviceId: String? = "deadbeef"
     var deviceName: String? = "Murglar"
 
@@ -39,19 +37,40 @@ class JellyfinApi(val murglar: JellyfinMurglar, val network: NetworkMiddleware, 
     fun createUrl(
         pathTemplate: String,
         pathParameters: Map<String, Any?> = emptyMap(),
-        queryParameters: Map<String, Any?> = emptyMap(),
-        includeCredentials: Boolean = false,
-        ignorePathParameters: Boolean = false,
-    ): String = UrlBuilder.buildUrl(
-        murglar.serverUrl,
-        pathTemplate,
-        pathParameters,
-        queryParameters.run {
-            if (includeCredentials) plus(ApiClient.QUERY_ACCESS_TOKEN to checkNotNull(token))
-            else this
-        },
-        ignorePathParameters,
-    )
+        queryParameters: Map<String, Any?> = emptyMap()
+    ): String {
+        var url = serverUrl
+        var path = pathTemplate
+
+            for ((key, value) in pathParameters) {
+                if (value != null) {
+                    path = path.replace("{$key}", value.toString())
+                }
+            }
+
+        url = when {
+            url.endsWith("/") && path.startsWith("/") -> url + path.substring(1)
+            !url.endsWith("/") && !path.startsWith("/") -> "$url/$path"
+            else -> url + path
+        }
+
+        if (queryParameters.isNotEmpty()) {
+            val queryString = queryParameters.entries
+                .filter { it.value != null }
+                .joinToString("&") { "${it.key}=${it.value.toString().encodeUrl()}" }
+
+            if (queryString.isNotEmpty())
+                url = "$url?$queryString"
+        }
+
+        return url
+    }
+
+    // Helper function to URL-encode parameter values
+    private fun String.encodeUrl(): String {
+        return java.net.URLEncoder.encode(this, "UTF-8")
+            .replace("+", "%20") // Replace + with %20 for spaces
+    }
 
     val itemsApi = ItemsApi(this)
     val userApi = UserApi(this)

@@ -1,12 +1,6 @@
 package com.graf2242.murglar_jellyfin_core.jellyfin_api.api
 
-import com.badmanners.murglar.lib.core.network.NetworkRequest
-import com.badmanners.murglar.lib.core.network.ResponseConverters
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
-import kotlinx.serialization.decodeFromString
-import org.jellyfin.sdk.api.client.util.ApiSerializer
-import org.jellyfin.sdk.model.UUID
-import org.jellyfin.sdk.model.api.PlaybackInfoResponse
 
 class AudioApi(val api: JellyfinApi) {
     fun getAudioStreamUrl(
@@ -16,7 +10,6 @@ class AudioApi(val api: JellyfinApi) {
         audioChannels: Int? = null,
         audioBitRate: Int? = null,
         audioSampleRate: Int? = null,
-        includeCredentials: Boolean = false,
     ): String {
         val pathParameters = buildMap<String, Any?>(1) {
             put("itemId", id)
@@ -71,7 +64,6 @@ class AudioApi(val api: JellyfinApi) {
 //            put("context", context)
 //            put("streamOptions", streamOptions)
         }
-        return api.createUrl("/Audio/{itemId}/stream", pathParameters, queryParameters,
-            includeCredentials)
+        return api.createUrl("/Audio/{itemId}/stream", pathParameters, queryParameters)
     }
 }

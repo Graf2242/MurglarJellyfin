@@ -4,7 +4,7 @@ pluginManagement {
         google()                                                    // for android gradle plugin
         maven { url = java.net.URI.create("https://jitpack.io") }   // for murglar gradle plugins
         mavenCentral()
-        maven { url = uri("https://plugins.gradle.org/m2/") }
+        mavenLocal()
     }
     resolutionStrategy {
         eachPlugin {
@@ -22,16 +22,15 @@ pluginManagement {
 dependencyResolutionManagement {
     versionCatalogs {
         create("catalog") {
-            version("murglar-plugins", "4.1")
+            version("murglar-plugins", "4.4")
+            version("murglar-jellyfin", "2")    // use just a single number
 
             // for core module
             plugin("murglar-plugin-core", "murglar-gradle-plugin-core").versionRef("murglar-plugins")
             // for android module
             plugin("murglar-plugin-android", "murglar-gradle-plugin-android").versionRef("murglar-plugins")
 
-            // for CLI client
-            library("murglar-core", "com.github.badmannersteam.murglar-plugins", "core").versionRef("murglar-plugins")
-            library("http-client", "org.apache.httpcomponents", "httpclient").version("4.5.14")
+            library("jellyfin", "org.jellyfin.sdk", "jellyfin-core-jvm").version("1.4.7")
         }
     }
 }
@@ -39,4 +38,3 @@ dependencyResolutionManagement {
 
 include(":murglar-jellyfin-core")
 include(":murglar-jellyfin-android")
-include("client-cli")

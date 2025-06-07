@@ -2,7 +2,6 @@ package com.graf2242.murglar_jellyfin_core.converters
 
 import com.badmanners.murglar.lib.core.model.track.source.Bitrate
 import com.badmanners.murglar.lib.core.model.track.source.Extension
-import javax.print.DocFlavor.STRING
 
 fun extensionConverter(name: String): Extension =
     when (name) {
@@ -11,7 +10,7 @@ fun extensionConverter(name: String): Extension =
         "wav" -> Extension.WAV
         "aac" -> Extension.AAC
         "ogg" -> Extension.OGG
-        else -> {Extension.UNKNOWN}
+        else -> Extension.UNKNOWN
     }
 
 fun bitrateConverter(bitrate: Int): Bitrate =

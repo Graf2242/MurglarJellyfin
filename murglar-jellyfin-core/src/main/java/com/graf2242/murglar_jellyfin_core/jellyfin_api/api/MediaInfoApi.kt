@@ -4,11 +4,8 @@ import com.badmanners.murglar.lib.core.network.NetworkRequest
 import com.badmanners.murglar.lib.core.network.ResponseConverters
 import com.graf2242.murglar_jellyfin_core.jellyfin_api.JellyfinApi
 import kotlinx.serialization.decodeFromString
-import org.jellyfin.sdk.api.client.Response
-import org.jellyfin.sdk.api.client.extensions.get
 import org.jellyfin.sdk.api.client.util.ApiSerializer
 import org.jellyfin.sdk.model.UUID
-import org.jellyfin.sdk.model.api.BaseItemDtoQueryResult
 import org.jellyfin.sdk.model.api.PlaybackInfoResponse
 
 class MediaInfoApi(val api: JellyfinApi) {
