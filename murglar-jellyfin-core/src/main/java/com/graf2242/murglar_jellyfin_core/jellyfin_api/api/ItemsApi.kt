@@ -7,7 +7,6 @@ import kotlinx.serialization.decodeFromString
 import org.jellyfin.sdk.api.client.util.ApiSerializer
 import org.jellyfin.sdk.model.api.BaseItemDtoQueryResult
 import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.SortOrder
 import java.util.UUID
 
 class ItemsApi(var api: JellyfinApi) {
@@ -38,9 +37,7 @@ class ItemsApi(var api: JellyfinApi) {
                 if (userId != null)
                     addParameter("userId", userId)
                 if (includeItemTypes.isNotEmpty())
-                    addParameter(
-                        "includeItemTypes",
-                        itemTypes)
+                    addParameter("includeItemTypes", itemTypes)
                 if (recursive != null)
                     addParameter("recursive", recursive)
                 if (searchTerm != null)

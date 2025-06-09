@@ -11,7 +11,7 @@ class UserApi(val api: JellyfinApi) {
     data class AuthResult(val userId: String?, val token: String?, val userName: String?)
 
     fun authenticateUserByName(data: AuthenticateUserByName): AuthResult {
-        val request = NetworkRequest.Builder("${api.serverUrl}/Users/AuthenticateByName" , "POST")
+        val request = NetworkRequest.Builder("${api.serverUrl}/Users/AuthenticateByName", "POST")
             .addHeader("Authorization", api.getAuthHeader())
             .body("""{ "username": "${data.username}", "pw": "${data.pw}" }""")
             .build()
@@ -25,7 +25,7 @@ class UserApi(val api: JellyfinApi) {
     }
 
     fun checkToken(): Boolean {
-        val request = NetworkRequest.Builder("${api.serverUrl}/Users" , "GET")
+        val request = NetworkRequest.Builder("${api.serverUrl}/Users", "GET")
             .addHeader("Authorization", api.getAuthHeader())
             .build()
         val response = api.network.execute(request, ResponseConverters.asString())

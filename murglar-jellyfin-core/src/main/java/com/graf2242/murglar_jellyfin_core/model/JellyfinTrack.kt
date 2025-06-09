@@ -2,9 +2,7 @@ package com.graf2242.murglar_jellyfin_core.model
 
 import com.badmanners.murglar.lib.core.model.node.NodeType.TRACK
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
-import com.badmanners.murglar.lib.core.model.track.source.Bitrate
 import com.badmanners.murglar.lib.core.model.track.source.Container
-import com.badmanners.murglar.lib.core.model.track.source.Extension
 import com.badmanners.murglar.lib.core.model.track.source.Source
 import com.badmanners.murglar.lib.core.utils.contract.Model
 import com.graf2242.murglar_jellyfin_core.converters.bitrateConverter
@@ -69,15 +67,38 @@ fun trackFromItemResult(result: BaseItemDtoQueryResult, jellyfinApi: JellyfinApi
         return emptyList();
 
     return result.items!!.map {
-        val bigCoverUrl = if (it.imageTags!!.containsKey(ImageType.PRIMARY)) jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.PRIMARY) else null
-        val smallCoverUrl = if (it.imageTags!!.containsKey(ImageType.LOGO)) jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.LOGO) else bigCoverUrl
+        val bigCoverUrl = when {
+            it.imageTags!!.containsKey(ImageType.PRIMARY) ->
+                jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.PRIMARY)
+            else -> null
+        }
+        val smallCoverUrl = when {
+            it.imageTags!!.containsKey(ImageType.LOGO) ->
+                jellyfinApi.imageApi.getItemImageUrl(itemId = it.id, imageType = ImageType.LOGO)
+            else -> bigCoverUrl
+        }
 
         val playbackInfo = jellyfinApi.mediaInfoApi.getPlaybackInfo(it.id)
 
-        val sourcesList = playbackInfo.mediaSources.map {itr ->
+        val sourcesList = playbackInfo.mediaSources.map { itr ->
             itr.mediaStreams!!.filter { iter -> iter.type == MediaStreamType.AUDIO }.map { iter ->
-                val url = jellyfinApi.audioApi.getAudioStreamUrl(it.id.toString(), container = it.container, audioCodec = iter.codec, audioChannels = iter.channels, audioBitRate = iter.bitRate, audioSampleRate = iter.sampleRate)
-                Source(id=itr.id.toString(), url=url, container = Container.PROGRESSIVE, extension = extensionConverter(iter.codec?:""), tag=iter.displayTitle!!, bitrate = bitrateConverter(iter.bitRate!!), size=itr.size!!)
+                val url = jellyfinApi.audioApi.getAudioStreamUrl(
+                    id = it.id.toString(),
+                    container = it.container,
+                    audioCodec = iter.codec,
+                    audioChannels = iter.channels,
+                    audioBitRate = iter.bitRate,
+                    audioSampleRate = iter.sampleRate
+                )
+                Source(
+                    id = itr.id.toString(),
+                    url = url,
+                    container = Container.PROGRESSIVE,
+                    extension = extensionConverter(iter.codec ?: ""),
+                    tag = iter.displayTitle!!,
+                    bitrate = bitrateConverter(iter.bitRate!!),
+                    size = itr.size!!
+                )
             }
         }
 

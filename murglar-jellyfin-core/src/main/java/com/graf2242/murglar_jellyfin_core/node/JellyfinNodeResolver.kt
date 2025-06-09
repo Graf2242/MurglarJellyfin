@@ -1,31 +1,28 @@
 package com.graf2242.murglar_jellyfin_core.node
 
-import com.badmanners.murglar.lib.core.node.BaseNodeResolver
-import com.graf2242.murglar_jellyfin_core.JellyfinMurglar
-import com.graf2242.murglar_jellyfin_core.localization.JellyfinMessages
-import com.graf2242.murglar_jellyfin_core.model.JellyfinTrack
+import com.badmanners.murglar.lib.core.model.node.NamedPath
+import com.badmanners.murglar.lib.core.model.node.Node
+import com.badmanners.murglar.lib.core.model.node.Node.Companion.to
 import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType.NON_PAGEABLE
 import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType.PAGEABLE
 import com.badmanners.murglar.lib.core.model.node.NodeType.ALBUM
 import com.badmanners.murglar.lib.core.model.node.NodeType.ARTIST
 import com.badmanners.murglar.lib.core.model.node.NodeType.TRACK
+import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.node.BaseNodeResolver
 import com.badmanners.murglar.lib.core.node.Directory
-import com.badmanners.murglar.lib.core.node.EventConfig
 import com.badmanners.murglar.lib.core.node.LikeConfig
-import com.badmanners.murglar.lib.core.model.node.Node.Companion.to
+import com.badmanners.murglar.lib.core.node.MappedEntity
 import com.badmanners.murglar.lib.core.node.Root
 import com.badmanners.murglar.lib.core.node.Search
 import com.badmanners.murglar.lib.core.node.Track
-import com.badmanners.murglar.lib.core.model.event.PlayerEvent.TrackEnd
-import com.badmanners.murglar.lib.core.model.event.PlayerEvent.TrackStart
-import com.badmanners.murglar.lib.core.model.node.NamedPath
-import com.badmanners.murglar.lib.core.model.node.Node
-import com.badmanners.murglar.lib.core.model.node.Path
-import com.badmanners.murglar.lib.core.node.MappedEntity
+import com.graf2242.murglar_jellyfin_core.JellyfinMurglar
+import com.graf2242.murglar_jellyfin_core.localization.JellyfinMessages
 import com.graf2242.murglar_jellyfin_core.model.JellyfinAlbum
 import com.graf2242.murglar_jellyfin_core.model.JellyfinArtist
+import com.graf2242.murglar_jellyfin_core.model.JellyfinTrack
 
-class JellyfinNodeResolver (
+class JellyfinNodeResolver(
     murglar: JellyfinMurglar,
     messages: JellyfinMessages
 ) : BaseNodeResolver<JellyfinMurglar, JellyfinMessages>(murglar, messages) {
@@ -112,8 +109,7 @@ class JellyfinNodeResolver (
             like = LikeConfig(rootNodePath("myArtists"), ::likeArtist),
             nodeSupplier = ::getArtist,
             nodeContentSupplier = ::getArtistSubdirectories
-        ),
-
+        )
     )
 
 
@@ -158,7 +154,7 @@ class JellyfinNodeResolver (
 
     private fun getAlbum(parentPath: Path, params: Map<String, String>) =
         murglar.getAlbum(params["albumId"]!!).convertAlbum(parentPath)
-    
+
     private fun getTrack(parentPath: Path, params: Map<String, String>) =
         murglar.getTrack(params["trackId"]!!, params["albumId"]).convertTrack(parentPath)
 

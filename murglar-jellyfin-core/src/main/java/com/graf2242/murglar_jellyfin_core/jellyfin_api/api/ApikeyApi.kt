@@ -9,7 +9,7 @@ import org.jellyfin.sdk.model.api.AuthenticationInfoQueryResult
 class ApikeyApi(val api: JellyfinApi) {
 
     fun keys(token: String): AuthenticationInfoQueryResult? {
-        val request = NetworkRequest.Builder("${api.serverUrl}/Auth/Keys" , "GET")
+        val request = NetworkRequest.Builder("${api.serverUrl}/Auth/Keys", "GET")
             .addHeader("Authorization", "MediaBrowser Token=${token}")
             .build()
         val response = api.network.execute(request, ResponseConverters.asJsonObject())
